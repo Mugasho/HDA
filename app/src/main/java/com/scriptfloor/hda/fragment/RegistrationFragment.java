@@ -56,6 +56,7 @@ public class RegistrationFragment extends Fragment {
         /////////
         ParentDataItem = new ParentDataItem();
         ParentDataItem.setParentName("Registration Details");
+        ParentDataItem.setItemImage(R.drawable.ic_group_add);
         ChildDataItems = new ArrayList<>();
         //
         ChildDataItem = new ChildDataItem();
@@ -68,6 +69,7 @@ public class RegistrationFragment extends Fragment {
         ////////
         ParentDataItem = new ParentDataItem();
         ParentDataItem.setParentName("Address");
+        ParentDataItem.setItemImage(R.drawable.ic_near_me);
         ChildDataItems = new ArrayList<>();
         //
         ChildDataItem = new ChildDataItem();
@@ -106,6 +108,7 @@ public class RegistrationFragment extends Fragment {
         ////////
         ParentDataItem = new ParentDataItem();
         ParentDataItem.setParentName("Contacts");
+        ParentDataItem.setItemImage(R.drawable.ic_local_phone_black_24dp);
         ChildDataItems = new ArrayList<>();
         //
         ChildDataItem = new ChildDataItem();

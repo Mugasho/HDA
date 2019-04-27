@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.ramotion.foldingcell.FoldingCell xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/folding_cell"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="1dp">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="10dp"
-        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/cell_content_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_parentName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:padding="16dp"
-            android:textAllCaps="false"
-            android:textStyle="bold" />
-
+            android:text="@string/title_activity_facility"
+            android:layout_height="250dp" />
         <LinearLayout
-            android:id="@+id/ll_child_items"
+            android:id="@+id/linearLayout_childItems"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/cell_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/cell_title_layout"/>
+    </FrameLayout>​
+</com.ramotion.foldingcell.FoldingCell>

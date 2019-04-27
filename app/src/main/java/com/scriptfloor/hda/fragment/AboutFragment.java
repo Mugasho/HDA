@@ -57,6 +57,7 @@ public class AboutFragment extends Fragment {
         /////////
         ParentDataItem = new ParentDataItem();
         ParentDataItem.setParentName("Detailed address");
+        ParentDataItem.setItemImage(R.drawable.ic_place);
         ChildDataItems = new ArrayList<>();
         //
         ChildDataItem = new ChildDataItem();
@@ -67,7 +68,8 @@ public class AboutFragment extends Fragment {
         DataItems.add(ParentDataItem);
         ////////
         ParentDataItem = new ParentDataItem();
-        ParentDataItem.setParentName("Vision and mission of the facility");
+        ParentDataItem.setItemImage(R.drawable.ic_library_books_black_24dp);
+        ParentDataItem.setParentName("Vision and mission");
         ChildDataItems = new ArrayList<>();
         //
         ChildDataItem = new ChildDataItem();
@@ -84,6 +86,7 @@ public class AboutFragment extends Fragment {
         DataItems.add(ParentDataItem);
         ////////
         ParentDataItem = new ParentDataItem();
+        ParentDataItem.setItemImage(R.drawable.ic_local_pharmacy);
         ParentDataItem.setParentName("Services Offered");
         ChildDataItems = new ArrayList<>();
         //
@@ -122,6 +125,7 @@ public class AboutFragment extends Fragment {
         DataItems.add(ParentDataItem);
         ////////
         ParentDataItem = new ParentDataItem();
+        ParentDataItem.setItemImage(R.drawable.ic_more_black_24dp);
         ParentDataItem.setParentName("Other Clinics");
         ChildDataItems = new ArrayList<>();
         //

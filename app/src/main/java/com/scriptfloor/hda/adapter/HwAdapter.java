@@ -44,7 +44,8 @@ public class HwAdapter extends RecyclerView.Adapter<HwAdapter.ViewHolder> implem
 
     @Override
     public void onBindViewHolder(HwAdapter.ViewHolder holder, int position) {
-        holder.HwName.setText(HwList.get(position).getNames());
+        holder.HwName.setText(HwList.get(position).getSurName()+" "+
+                HwList.get(position).getFirstName() +" "+HwList.get(position).getOtherNames());
         holder.HwQualification.setText(HwList.get(position).getQualification());
         holder.HwTitle.setText(HwList.get(position).getTitle());
         if(HwList.get(position).getLicenceStatus()=="inactive"){
@@ -59,7 +60,7 @@ public class HwAdapter extends RecyclerView.Adapter<HwAdapter.ViewHolder> implem
 
     @Override
     public String getSectionTitle(int position) {
-        return HwList.get(position).getNames().substring(0, 1);
+        return HwList.get(position).getSurName()+" "+HwList.get(position).getFirstName();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -82,7 +83,9 @@ public class HwAdapter extends RecyclerView.Adapter<HwAdapter.ViewHolder> implem
         public void onClick(View v) {
             Intent intent = new Intent(context, HwProfileActivity.class);
             intent.putExtra("id", HwList.get(getAdapterPosition()).getID());
-            intent.putExtra("name", HwList.get(getAdapterPosition()).getNames());
+            intent.putExtra("surname", HwList.get(getAdapterPosition()).getSurName());
+            intent.putExtra("first_name", HwList.get(getAdapterPosition()).getFirstName());
+            intent.putExtra("other_names", HwList.get(getAdapterPosition()).getOtherNames());
             intent.putExtra("title", HwList.get(getAdapterPosition()).getTitle());
             intent.putExtra("qualification", HwList.get(getAdapterPosition()).getQualification());
             intent.putExtra("council", HwList.get(getAdapterPosition()).getCouncil());
@@ -104,5 +107,16 @@ public class HwAdapter extends RecyclerView.Adapter<HwAdapter.ViewHolder> implem
         }
 
         return buf.toString();
+    }
+
+    public void clear() {
+        HwList.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<HwModel> Hws) {
+        HwList.addAll(Hws);
+        notifyDataSetChanged();
     }
 }

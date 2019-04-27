@@ -99,10 +99,10 @@ public class LoginActivity extends AppCompatActivity {
         btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                /**Intent i = new Intent(getApplicationContext(),
+                Intent i = new Intent(getApplicationContext(),
                  RegisterActivity.class);
-                 startActivity(i); **/
-                showAlert("Notice", "Contact admin for account details", R.color.colorPrimary);
+                 startActivity(i);
+                //showAlert("Notice", "Contact admin for account details", R.color.colorPrimary);
             }
         });
 
@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     // JSON error
                     e.printStackTrace();
-                    showAlert("Json Error", e.getMessage(), R.color.red);
+                    showAlert("Login Error", e.getMessage(), R.color.red);
                 }
 
             }

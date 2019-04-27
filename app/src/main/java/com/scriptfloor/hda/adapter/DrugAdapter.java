@@ -116,4 +116,14 @@ public class DrugAdapter extends RecyclerView.Adapter<DrugAdapter.ViewHolder> im
         return buf.toString();
     }
 
+    public void clear() {
+        DrugList.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<DrugModel> drugs) {
+        DrugList.addAll(drugs);
+        notifyDataSetChanged();
+    }
 }

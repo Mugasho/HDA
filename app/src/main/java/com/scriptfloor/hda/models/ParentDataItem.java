@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 
 public class ParentDataItem implements Serializable {
+    private int itemImage;
     private String parentName;
     private ArrayList<ChildDataItem> childDataItems;
 
@@ -25,5 +26,13 @@ public class ParentDataItem implements Serializable {
 
     public void setChildDataItems(ArrayList<ChildDataItem> childDataItems) {
         this.childDataItems = childDataItems;
+    }
+
+    public int getItemImage() {
+        return itemImage;
+    }
+
+    public void setItemImage(int itemImage) {
+        this.itemImage = itemImage;
     }
 }

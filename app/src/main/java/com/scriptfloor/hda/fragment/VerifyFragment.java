@@ -35,7 +35,7 @@ public class VerifyFragment extends Fragment {
     public static TextView batch_no_txt, batch_found, batch_alert, safety_alert, instruction_txt, govt_txt;
     public static ImageView verifyImage;
     public static LinearLayout lay_verify;
-    public static String searchString, reason;
+    public static String searchString, heading,reason;
 
     public static Button btnReport, btn_info;
 
@@ -76,6 +76,8 @@ public class VerifyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FeedbackActivity.class);
+                intent.putExtra("title",heading);
+                intent.putExtra("reason",reason);
                 getActivity().startActivity(intent);
             }
         });
@@ -101,6 +103,9 @@ public class VerifyFragment extends Fragment {
                 batch_alert.setText(R.string.possible_reason);
                 safety_alert.setText(R.string.warning);
                 safety_alert.setTextColor(Color.RED);
+                heading=searchString;
+                reason="Unregistered drugs may be harmful. We advise you to inform nda and any other " +
+                        "authorities by filling in the form below";
                 instruction_txt.setText(R.string.not_found_reason);
                 verifyImage.setImageResource(R.drawable.ic_error_black_24dp);
                 btn_info.setText(R.string.about_unregistered);
@@ -117,6 +122,8 @@ public class VerifyFragment extends Fragment {
                         instruction_txt.setText(R.string.nda_info);
                         govt_txt.setVisibility(View.GONE);
                         verifyImage.setImageResource(R.drawable.ic_cancel);
+                        heading=searchString;
+                        reason=getString(R.string.expired);
                         btnReport.setBackgroundResource(R.drawable.red_round_btn);
                         btn_info.setText(R.string.medicine_info);
                     } else {
@@ -126,6 +133,9 @@ public class VerifyFragment extends Fragment {
                         batch_alert.setTextColor(Color.parseColor("#2e7d32"));
                         instruction_txt.setText(R.string.instruction);
                         govt_txt.setVisibility(View.GONE);
+                        heading=searchString;
+                        reason="Unregistered drugs may be harmful. We advise you to inform nda and any other " +
+                                "authorities by filling in the form below";
                         verifyImage.setImageResource(R.drawable.ic_check_circle_black_24dp);
                         btnReport.setBackgroundResource(R.drawable.green_round_btn);
                         btn_info.setText(R.string.medicine_info);

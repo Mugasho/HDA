@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ramotion.foldingcell.FoldingCell;
 import com.scriptfloor.hda.R;
 import com.scriptfloor.hda.models.ParentDataItem;
 
@@ -39,8 +40,10 @@ public class ParentChildAdapter extends RecyclerView.Adapter<ParentChildAdapter.
     @Override
     public void onBindViewHolder(ParentChildAdapter.ViewHolder holder, int position) {
         ParentDataItem ParentDataItem = ParentDataItems.get(position);
-        holder.textView_parentName.setText(ParentDataItem.getParentName());
-
+        int image=ParentDataItem.getItemImage()!=0?ParentDataItem.getItemImage():R.drawable.alerter_ic_face;
+        holder.tv_image.setImageResource(image);
+        holder.tv_parentName.setText(ParentDataItem.getParentName());
+        holder.tv_childName.setText(ParentDataItem.getChildDataItems().get(0).getChildDetail());
         //
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,7 +64,6 @@ public class ParentChildAdapter extends RecyclerView.Adapter<ParentChildAdapter.
         } else {
             holder.linearLayout_childItems.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -71,54 +73,27 @@ public class ParentChildAdapter extends RecyclerView.Adapter<ParentChildAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Context context;
-        private TextView textView_parentName;
+        private TextView tv_parentName;
+        private TextView tv_childName;
+        private ImageView tv_image;
         private LinearLayout linearLayout_childItems;
-        private TextView txtListChildDetail;
-        private View convertView;
+        private FoldingCell fc;
 
         ViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
-            textView_parentName = itemView.findViewById(R.id.tv_parentName);
-            linearLayout_childItems = itemView.findViewById(R.id.ll_child_items);
-            linearLayout_childItems.setVisibility(View.GONE);
+            fc =itemView.findViewById(R.id.folding_cell);
+            tv_image=itemView.findViewById(R.id.itemImage);
+            tv_parentName = itemView.findViewById(R.id.title_from_address);
+            linearLayout_childItems=itemView.findViewById(R.id.linearLayout_childItems);
+            tv_childName=itemView.findViewById(R.id.title_to_address);
 
-           /* LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            int intMaxNoOfChild = 0;
-            for (int index = 0; index < ParentDataItems.size(); index++) {
-                int intMaxSizeTemp = ParentDataItems.get(index).getChildDataItems().size();
-                if (intMaxSizeTemp > intMaxNoOfChild) intMaxNoOfChild = intMaxSizeTemp;
-            }
-            for (int indexView = 0; indexView < intMaxNoOfChild; indexView++) {
-*//*                TextView textView = new TextView(context);
-                textView.setId(indexView);
-                textView.setPadding(5, 5, 5, 5);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                textView.setOnClickListener(this);
-                linearLayout_childItems.addView(textView, layoutParams);*//*
-                //
-
-                convertView=inflater.inflate(R.layout.child_item_layout,null);
-                txtListChildDetail = convertView.findViewById(R.id.txt_child_detail);
-                txtListChildDetail.setText(ParentDataItems.get(indexView).getChildDataItems().get(textViewIndex).getChildName());
-                linearLayout_childItems.addView(convertView);
-            }*/
-            textView_parentName.setOnClickListener(this);
+            fc.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            if (view.getId() == R.id.tv_parentName) {
-                if (linearLayout_childItems.getVisibility() == View.VISIBLE) {
-                    linearLayout_childItems.setVisibility(View.GONE);
-                } else {
-                    linearLayout_childItems.setVisibility(View.VISIBLE);
-                }
-            } else {
-                TextView textViewClicked = (TextView) view;
-                Toast.makeText(context, "" + textViewClicked.getText().toString(), Toast.LENGTH_SHORT).show();
-            }
+            fc.toggle(false);
         }
     }
 }

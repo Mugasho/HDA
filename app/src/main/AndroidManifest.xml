@@ -83,6 +83,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.scriptfloor.hda.MainActivity" />
         </activity>
+        <activity android:name=".BrowserActivity" />
+        <activity
+            android:name=".NewsActivity"
+            android:label="@string/title_activity_news"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.scriptfloor.hda.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

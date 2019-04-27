@@ -1,20 +1,31 @@
 package com.scriptfloor.hda.models;
 
+import java.util.Date;
+
 /**
  * Created by LINCOLN on 10/8/2018.
  */
 
 public class HwModel {
-    public String ID;
-    public String RegNo;
-    public String Names;
-    public String RegDate;
-    public String Licence;
-    public String LicenceStatus;
-    public String Council;
-    public String Title;
-    public String Photo;
-    public String Qualification;
+    private String ID;
+    private String RegNo;
+    private String SurName;
+    private String OtherNames;
+    private String FirstName;
+    private String RegDate;
+    private String Licence;
+    private String LicenceStatus;
+    private String Council;
+    private String Address;
+    private String Title;
+    private String Email;
+    private String Phone;
+    private String Notes;
+    private String Photo;
+    private String Qualification;
+    private String Institution;
+    private String Nationality;
+    private String dateAdded;
 
     public String getID() {
         return ID;
@@ -32,12 +43,28 @@ public class HwModel {
         RegNo = regNo;
     }
 
-    public String getNames() {
-        return Names;
+    public String getSurName() {
+        return SurName;
     }
 
-    public void setNames(String names) {
-        Names = names;
+    public void setSurName(String surName) {
+        SurName = surName;
+    }
+
+    public String getOtherNames() {
+        return OtherNames;
+    }
+
+    public void setOtherNames(String otherNames) {
+        OtherNames = otherNames;
+    }
+
+    public String getFirstName() {
+        return FirstName;
+    }
+
+    public void setFirstName(String firstName) {
+        FirstName = firstName;
     }
 
     public String getRegDate() {
@@ -80,6 +107,30 @@ public class HwModel {
         Title = title;
     }
 
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+    public String getPhone() {
+        return Phone;
+    }
+
+    public void setPhone(String phone) {
+        Phone = phone;
+    }
+
+    public String getNotes() {
+        return Notes;
+    }
+
+    public void setNotes(String notes) {
+        Notes = notes;
+    }
+
     public String getPhoto() {
         return Photo;
     }
@@ -94,5 +145,37 @@ public class HwModel {
 
     public void setQualification(String qualification) {
         Qualification = qualification;
+    }
+
+    public String getInstitution() {
+        return Institution;
+    }
+
+    public void setInstitution(String institution) {
+        Institution = institution;
+    }
+
+    public String getNationality() {
+        return Nationality;
+    }
+
+    public void setNationality(String nationality) {
+        Nationality = nationality;
+    }
+
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
     }
 }

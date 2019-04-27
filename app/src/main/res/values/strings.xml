@@ -261,4 +261,27 @@
     <string name="content_to1_mock">46th Ave</string>
     <string name="content_to2_mock">Woodside, NY 11101</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="phone_number">Phone number</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last Name</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="username">Username</string>
+    <string name="names">Names:</string>
+
+    <string-array name="comment_category_entries">
+        <item>Effectiveness</item>
+        <item>Side effects</item>
+        <item>Physical Features</item>
+        <item>Suspicious</item>
+        <item>Adverse drug reaction</item>
+        <item>Others</item>
+    </string-array>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="news">News</string>
+    <string name="help_facilities">The button connects you to a form where members of the public can communicate back to regulatory authorities about the quality of services being received in a given facility, complaints against a facility and its workers and activities of benefit or risk within a facility. The information helps the authorities to do appropriate followup and inspection which and the authority may chose whether to involve the sender of the information. but irrespective of the choice made, the sender will be protected and information will be handled confidentially to protect the community where the health facility is rendering its facilities.</string>
+    <string name="feedback_form">feedback form</string>
+    <string name="feedback_forms">feedback forms</string>
+    <string name="title_activity_news">NewsActivity</string>
 </resources>

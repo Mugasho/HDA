@@ -12,7 +12,7 @@ import android.widget.TextView;
 public class HwProfileActivity extends AppCompatActivity {
 
     TextView hwName,hwTitle,hwQualification,hwCouncil,hwLicense,hwStatus,hwRegno,hwRegDate;
-    String name,title,qualification,council,license,status,regno,regdate;
+    String surname,firstName,otherNames,title,qualification,council,license,status,regno,regdate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +21,9 @@ public class HwProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        name = intent.getStringExtra("name");
+        surname = intent.getStringExtra("surname");
+        firstName = intent.getStringExtra("first_name");
+        otherNames = intent.getStringExtra("other_names");
         title = intent.getStringExtra("title");
         qualification = intent.getStringExtra("qualification");
         council = intent.getStringExtra("council");
@@ -30,7 +32,7 @@ public class HwProfileActivity extends AppCompatActivity {
         regno = intent.getStringExtra("regno");
         regdate = intent.getStringExtra("regdate");
         hwName = findViewById(R.id.hwName);
-        hwName.setText("Names:"+name);
+        hwName.setText(String.format("%s%s %s %s", getString(R.string.names), surname, firstName, otherNames));
         hwTitle = findViewById(R.id.hwTitle);
         hwTitle.setText("Title:"+title);
         hwQualification = findViewById(R.id.hwQualification);

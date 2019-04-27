@@ -89,4 +89,15 @@ public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.ViewHo
 
         return buf.toString();
     }
+
+    public void clear() {
+        facilities.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<FacilityModel> facility) {
+        facilities.addAll(facility);
+        notifyDataSetChanged();
+    }
 }

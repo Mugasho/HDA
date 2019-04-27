@@ -35,6 +35,9 @@
         <item name="android:textStyle">bold</item>
 
     </style>
+    <style name="TransparentText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#00000000</item>
+    </style>
 
     <style name="ContentMainBadgeTitle" parent="AppTheme">
         <item name="android:textColor">@color/contentBadgeTitle</item>
