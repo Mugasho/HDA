@@ -54,10 +54,17 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_DRUG_COUNTRY = "country";
     private static final String KEY_DRUG_TYPE = "type";
     // Facility Table Columns names
+    private static final String KEY_FACILITY_ID = "id";
     private static final String KEY_FACILITY_NAME = "name";
     private static final String KEY_FACILITY_ADDRESS = "address";
     private static final String KEY_FACILITY_SECTOR = "sector";
     private static final String KEY_FACILITY_CATEGORY = "category";
+    private static final String KEY_FACILITY_LICENSE = "license";
+    private static final String KEY_FACILITY_CONTACT = "contact";
+    private static final String KEY_FACILITY_PHONE = "phone";
+    private static final String KEY_FACILITY_EMAIL = "email";
+    private static final String KEY_FACILITY_QUALIFICATION = "qualification";
+    private static final String KEY_FACILITY_LOCATION = "location";
 
     // Facility Table Columns names
     private static final String KEY_BATCH_NO = "batchno";
@@ -126,9 +133,18 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             KEY_DOCTOR_DATE_ADDED + " TEXT" + ")";
 
     private String CREATE_FACILITIES_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_FACILITIES + "("
-            + KEY_ID + " INTEGER PRIMARY KEY," + KEY_FACILITY_NAME + " TEXT,"
-            + KEY_FACILITY_ADDRESS + " TEXT," + KEY_FACILITY_SECTOR + " TEXT,"
-            + KEY_FACILITY_CATEGORY + " TEXT," + KEY_CREATED_AT + " TEXT" + ")";
+            + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_FACILITY_NAME + " TEXT,"
+            + KEY_FACILITY_ADDRESS + " TEXT,"
+            + KEY_FACILITY_SECTOR + " TEXT,"
+            + KEY_FACILITY_CATEGORY + " TEXT,"
+            + KEY_FACILITY_LICENSE + " TEXT,"
+            + KEY_FACILITY_CONTACT + " TEXT,"
+            + KEY_FACILITY_PHONE + " TEXT,"
+            + KEY_FACILITY_EMAIL + " TEXT,"
+            + KEY_FACILITY_QUALIFICATION + " TEXT,"
+            + KEY_FACILITY_LOCATION + " TEXT,"
+            + KEY_CREATED_AT + " TEXT" + ")";
 
     private String CREATE_DRUGS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_DRUGS + "("
             + KEY_ID + " INTEGER PRIMARY KEY," + KEY_DRUG_BRAND + " TEXT,"
@@ -272,15 +288,21 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing Facility details in database
      */
-    public void addFacility(String name, String address, String sector, String category, String created_at) {
+    public void addFacility(FacilityModel facility) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_FACILITY_NAME, name); // brand
-        values.put(KEY_FACILITY_ADDRESS, address); // generic
-        values.put(KEY_FACILITY_SECTOR, sector); // class
-        values.put(KEY_FACILITY_CATEGORY, category); // class
-        values.put(KEY_CREATED_AT, created_at); // Created At
+        values.put(KEY_FACILITY_NAME, facility.getFacilityName()); // brand
+        values.put(KEY_FACILITY_ADDRESS, facility.getFacilityAddress()); // generic
+        values.put(KEY_FACILITY_SECTOR, facility.getFacilitySector()); // class
+        values.put(KEY_FACILITY_CATEGORY, facility.getFacilityCategory());
+        values.put(KEY_FACILITY_LICENSE, facility.getFacilityLicense());
+        values.put(KEY_FACILITY_CONTACT, facility.getContact());
+        values.put(KEY_FACILITY_PHONE, facility.getPhone());
+        values.put(KEY_FACILITY_EMAIL, facility.getEmail());
+        values.put(KEY_FACILITY_QUALIFICATION, facility.getQualification());
+        values.put(KEY_FACILITY_LOCATION, facility.getFacilityLocation());
+        values.put(KEY_CREATED_AT, facility.getCreatedAt()); // Created At
         // Inserting Facility
         long id = db.insert(TABLE_FACILITIES, null, values);
         db.close(); // Closing database connection
@@ -517,7 +539,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             String query = "select * from " + TABLE_FACILITIES + " ORDER BY " + KEY_FACILITY_NAME + " ASC";
             if (searchString != "") {
                 query = "select * from " + TABLE_FACILITIES + " where " + KEY_FACILITY_NAME + " like '%" + searchString + "%'"
-                        + " or " + KEY_FACILITY_ADDRESS + " like '%" + searchString + "%'" + " or " + KEY_FACILITY_SECTOR + " like '%" + searchString + "%'"
+                        + " or " + KEY_FACILITY_LOCATION + " like '%" + searchString + "%'" + " or " + KEY_FACILITY_SECTOR + " like '%" + searchString + "%'"
                         + " or " + KEY_FACILITY_CATEGORY + " like '%" + searchString + "%' ORDER BY " + KEY_FACILITY_NAME + " ASC LIMIT 100";
             }
             Cursor cursor;
@@ -534,6 +556,13 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                         facility.setFacilityAddress(cursor.getString(2));
                         facility.setFacilitySector(cursor.getString(3));
                         facility.setFacilityCategory(cursor.getString(4));
+                        facility.setFacilityLicense(cursor.getString(5));
+                        facility.setContact(cursor.getString(6));
+                        facility.setPhone(cursor.getString(7));
+                        facility.setEmail(cursor.getString(8));
+                        facility.setQualification(cursor.getString(9));
+                        facility.setFacilityLocation(cursor.getString(10));
+                        facility.setCreatedAt(cursor.getString(11));
 
                         facilities.add(facility);
                     } while (cursor.moveToNext());
@@ -546,6 +575,40 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         return facilities;
+    }
+
+    public FacilityModel getFacilityByID(int id){
+        FacilityModel facility = new FacilityModel();
+        try {
+            String query = "select * from " + TABLE_FACILITIES + " WHERE " + KEY_ID + "="+id;
+            Cursor cursor;
+            SQLiteDatabase db = this.getWritableDatabase();
+            cursor = db.rawQuery(query, null);
+
+            if (cursor != null) {
+                //if cursor contains results
+                if (cursor.moveToFirst()) {
+                    facility.setFacilityID(cursor.getString(0));
+                    facility.setFacilityName(cursor.getString(1));
+                    facility.setFacilityAddress(cursor.getString(2));
+                    facility.setFacilitySector(cursor.getString(3));
+                    facility.setFacilityCategory(cursor.getString(4));
+                    facility.setFacilityLicense(cursor.getString(5));
+                    facility.setContact(cursor.getString(6));
+                    facility.setPhone(cursor.getString(7));
+                    facility.setEmail(cursor.getString(8));
+                    facility.setQualification(cursor.getString(9));
+                    facility.setFacilityLocation(cursor.getString(10));
+                    facility.setCreatedAt(cursor.getString(11));
+                }
+            }
+
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return facility;
     }
 
     public List<HwModel> getHealthWorkers(String limit, String begin, String search) {
@@ -634,6 +697,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
 
         Log.d(TAG, "Deleted all posts from Database");
+    }
+
+    public void deleteFacilities() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_FACILITIES, null, null);
+        db.close();
+
+        Log.d(TAG, "Deleted all facilities from Database");
     }
 
     public void createNewsTable() {

@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -35,7 +34,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.scriptfloor.hda.adapter.NewsAdapter;
 import com.scriptfloor.hda.adapter.PageAdapter;
@@ -45,6 +43,7 @@ import com.scriptfloor.hda.fragment.DrugsFragment;
 import com.scriptfloor.hda.fragment.FacilityFragment;
 import com.scriptfloor.hda.fragment.VerifyFragment;
 import com.scriptfloor.hda.models.DrugModel;
+import com.scriptfloor.hda.models.FacilityModel;
 import com.scriptfloor.hda.models.NewsModel;
 import com.scriptfloor.hda.utils.SQLiteHandler;
 import com.scriptfloor.hda.utils.SessionManager;
@@ -54,7 +53,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -265,7 +263,8 @@ public class MainActivity extends AppCompatActivity
             logoutUser();
         }
         if (session.isFirstTime() && session.isLoggedIn()) {
-            addData();
+            addDrugs();
+            addFacilities();
         }
 
         newsModelList = db.getPosts();
@@ -403,11 +402,11 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
     }
 
-    private void addData() {
+    private void addDrugs() {
         // Tag used to cancel the request
         String tag_string_req = "req_login";
 
-        pDialog.setMessage("Loading Data ...");
+        pDialog.setMessage("Loading Drugs ...");
         showDialog();
 
         StringRequest strReq = new StringRequest(Request.Method.GET,
@@ -472,6 +471,79 @@ public class MainActivity extends AppCompatActivity
         appController.addToRequestQueue(strReq, tag_string_req);
     }
 
+    private void addFacilities() {
+        // Tag used to cancel the request
+        String tag_string_req = "req_login";
+
+        pDialog.setMessage("Loading Facilities ...");
+        showDialog();
+
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                AppConfig.URL_FACILITIES, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Facility: " + response);
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+                    // Check for error node in json
+                    if (!error) {
+                        db.deleteFacilities();
+                        JSONArray jArray = jObj.optJSONArray("facility");
+                        for (int i = 0; i < jArray.length(); i++) {
+                            JSONObject json_data = jArray.getJSONObject(i);
+                            FacilityModel facility=new FacilityModel();
+                            facility.setFacilityID(json_data.getString("id"));
+                            facility.setFacilityName(json_data.getString("facility"));
+                            facility.setFacilityAddress(json_data.getString("address"));
+                            facility.setFacilitySector(json_data.getString("sector"));
+                            facility.setFacilityCategory(json_data.getString("category"));
+                            facility.setFacilityLicense(json_data.getString("license"));
+                            facility.setContact(json_data.getString("contact"));
+                            facility.setPhone(json_data.getString("phone"));
+                            facility.setEmail(json_data.getString("email"));
+                            facility.setQualification(json_data.getString("qualification"));
+                            facility.setFacilityLocation(json_data.getString("location"));
+                            facility.setCreatedAt(json_data.getString("created_at"));
+                            db.addFacility(facility);
+                        }
+                        Log.d("HDA","Facility loaded");
+                        session.setFirstTime(false);
+                    }
+                    pDialog.setMessage("Loading completed");
+                    finish();
+                    startActivity(getIntent());
+                } catch (JSONException e) {
+                    // JSON error
+                    e.printStackTrace();
+                    showAlert("Json Error", e.getMessage(), R.color.red);
+                }
+                hideDialog();
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error: " + error.getMessage());
+                showAlert("Failed to Update", "Check your internet connection", R.color.red);
+                hideDialog();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+        RequestQueue mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+        AppController appController = new AppController(mRequestQueue);
+        // Adding request to request queue
+        appController.addToRequestQueue(strReq, tag_string_req);
+    }
     private void getNews() {
         String tag_string_req = "req_news";
         StringRequest strReq = new StringRequest(Request.Method.GET,

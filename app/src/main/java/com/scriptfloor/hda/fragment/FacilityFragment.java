@@ -1,10 +1,12 @@
 package com.scriptfloor.hda.fragment;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,14 +14,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.gturedi.views.StatefulLayout;
 import com.scriptfloor.hda.R;
+import com.scriptfloor.hda.app.AppConfig;
+import com.scriptfloor.hda.app.AppController;
 import com.scriptfloor.hda.models.FacilityModel;
 import com.scriptfloor.hda.adapter.FacilityAdapter;
 import com.scriptfloor.hda.utils.SQLiteHandler;
+import com.tapadoo.alerter.Alerter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -28,11 +45,12 @@ import java.util.List;
 public class FacilityFragment extends Fragment {
 
     public static List<FacilityModel> facilityList;
-    public static RecyclerView.Adapter mAdapter;
+    public static FacilityAdapter mAdapter;
     public static SQLiteHandler dbHandler;
     public static RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     public static StatefulLayout stateful;
+    private SwipeRefreshLayout swipeContainer;
 
     public FacilityFragment() {
         // Required empty public constructor
@@ -44,56 +62,136 @@ public class FacilityFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_facility, container, false);
         mRecyclerView = view.findViewById(R.id.facilityList);
+        swipeContainer = view.findViewById(R.id.swipeFacility);
         stateful = view.findViewById(R.id.stateful);
         stateful.showLoading();
+        dbHandler = new SQLiteHandler(getActivity());
         mRecyclerView.setHasFixedSize(true);
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        try {
-            dbHandler = new SQLiteHandler(getActivity());
-            facilityList = new ArrayList<>();
-            facilityList = dbHandler.getFacilities("");
-            if(facilityList.size()<1){
-                dbHandler.addFacility("ab medical centre","mukono","private","clinic","");
-                dbHandler.addFacility("abaita medical centre","kampala","private","clinic","");
-                dbHandler.addFacility("abedober health centre ","gulu","private","hospital","");
-                dbHandler.addFacility("aboke mission health centre ii ","lira","pnfp","clinic","");
-                dbHandler.addFacility("mulago hospital","kampala","govt","hospital","");
-                dbHandler.addFacility("mbarara hospital","mbarara","govt","hospital","");
-                dbHandler.addFacility("adjumani mission health centre iii ","adjumani","pnfp","hospital","");
-                dbHandler.addFacility("mubende hospital","mubende","govt","hospital","");
-                dbHandler.addFacility("32 adwoki maternity home ","gulu","private","clinic","");
-                dbHandler.addFacility("adcare medical centre ","masaka","private","clinic","");
-                dbHandler.addFacility("nyakibale hospital","mukono","private","clinic","");
-                dbHandler.addFacility("abedober health centre ","mukono","private","clinic","");
-                dbHandler.addFacility("kisiizi hospital","mukono","private","clinic","");
-                dbHandler.addFacility("gayaza diagnostic centre ","gayaza","private","clinic","");
-                dbHandler.addFacility("489 giant medical clinic ","mukono","pnfp","clinic","");
-            }
-            // specify an adapter
+        facilityList = new ArrayList<>();
+        facilityList = dbHandler.getFacilities("");
+        if (facilityList.size() > 0) {
             mAdapter = new FacilityAdapter(getActivity(), facilityList);
             mRecyclerView.setAdapter(mAdapter);
             stateful.showContent();
-        } catch (NumberFormatException e) {
-            Snackbar.make(view, "No Previous Records", Snackbar.LENGTH_LONG)
-                    .setAction("Cancel", null).show();
+        }else{
+            addFacilities();
         }
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                addFacilities();
+            }
+        });
+        swipeContainer.setNestedScrollingEnabled(true);
         return view;
     }
 
-    public void Search(String searchString,Context context) {
+    public void Search(String searchString, Context context) {
         stateful.showLoading();
         Log.d("Str", searchString);
         facilityList = dbHandler.getFacilities(searchString);
         mAdapter = new FacilityAdapter(context, facilityList);
         mAdapter.notifyDataSetChanged();
-        if(facilityList.size()>0){
+        if (facilityList.size() > 0) {
             stateful.showContent();
             mRecyclerView.setAdapter(mAdapter);
-        }else{
+        } else {
             stateful.showEmpty("No facilities match your search");
         }
 
+    }
+
+    private void addFacilities() {
+        // Tag used to cancel the request
+        String tag_string_req = "req_login";
+
+        stateful.showLoading();
+
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                AppConfig.URL_FACILITIES, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+                    // Check for error node in json
+                    if (!error) {
+                        dbHandler.deleteFacilities();
+                        facilityList.clear();
+                        JSONArray jArray = jObj.optJSONArray("facility");
+                        for (int i = 0; i < jArray.length(); i++) {
+                            JSONObject json_data = jArray.getJSONObject(i);
+                            FacilityModel facility = new FacilityModel();
+                            facility.setFacilityID(json_data.getString("id"));
+                            facility.setFacilityName(json_data.getString("facility"));
+                            facility.setFacilityAddress(json_data.getString("address"));
+                            facility.setFacilitySector(json_data.getString("sector"));
+                            facility.setFacilityCategory(json_data.getString("category"));
+                            facility.setFacilityLicense(json_data.getString("license"));
+                            facility.setContact(json_data.getString("contact"));
+                            facility.setPhone(json_data.getString("phone"));
+                            facility.setEmail(json_data.getString("email"));
+                            facility.setQualification(json_data.getString("qualification"));
+                            facility.setFacilityLocation(json_data.getString("location"));
+                            facility.setCreatedAt(json_data.getString("created_at"));
+                            dbHandler.addFacility(facility);
+                        }
+                        facilityList = dbHandler.getFacilities("");
+                        for (int i = 0; i < facilityList.size(); i++) {
+
+                        }
+                        if (facilityList != null) {
+                            mAdapter.addAll(facilityList);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        Log.d("HDA", "Facility loaded");
+
+                    }
+                    swipeContainer.setRefreshing(false);
+                    stateful.showContent();
+                } catch (JSONException e) {
+                    // JSON error
+                    e.printStackTrace();
+                    showAlert("Json Error", e.getMessage(), R.color.red);
+                    swipeContainer.setRefreshing(false);
+                    stateful.showContent();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("HDA", "Error: " + error.getMessage());
+                showAlert("Failed to Update", "Check your internet connection", R.color.red);
+                swipeContainer.setRefreshing(false);
+                stateful.showContent();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+        RequestQueue mRequestQueue = Volley.newRequestQueue(getActivity());
+        AppController appController = new AppController(mRequestQueue);
+        // Adding request to request queue
+        appController.addToRequestQueue(strReq, tag_string_req);
+    }
+
+    private void showAlert(String Title, String content, int colorInt) {
+        Alerter.create(getActivity())
+                .setTitle(Title)
+                .setText(content)
+                .setBackgroundColorRes(colorInt) // or setBackgroundColorInt(Color.CYAN)
+                .show();
     }
 }

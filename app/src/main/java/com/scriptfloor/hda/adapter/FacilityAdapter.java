@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.scriptfloor.hda.FacilityActivity;
 import com.scriptfloor.hda.R;
+import com.scriptfloor.hda.fragment.RegistrationFragment;
 import com.scriptfloor.hda.models.FacilityModel;
 
 import java.util.List;
@@ -41,9 +42,13 @@ public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.ViewHo
     @Override
     public void onBindViewHolder(FacilityAdapter.ViewHolder holder, int position) {
         holder.facilityName.setText(limit(facilities.get(position).getFacilityName(),100));
-        holder.facilityAddress.setText(limit(facilities.get(position).getFacilityAddress(),100));
+        String loc=facilities.get(position).getFacilityLocation();
+        //TO DO: Check for null location
+        String[] addresses=facilities.get(position).getFacilityLocation()!=null?facilities.get(position).getFacilityLocation().split(","):null;
+        String location=addresses[2]!=null?addresses[2]:facilities.get(position).getFacilityLocation();
+        holder.facilityAddress.setText(limit(location,100));
         holder.facilitySector.setText(limit(facilities.get(position).getFacilitySector(),100));
-        holder.facilityCategory.setText(limit(facilities.get(position).getFacilityCategory(),100));
+        holder.facilityCategory.setText(limit(facilities.get(position).getFacilityCategory(),20));
     }
 
     @Override
@@ -72,8 +77,11 @@ public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.ViewHo
             Intent intent = new Intent(context, FacilityActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("position",getAdapterPosition());
+            intent.putExtra("id",facilities.get(getAdapterPosition()).getFacilityID());
             intent.putExtra("facility",facilities.get(getAdapterPosition()).getFacilityName());
             intent.putExtra("sector",facilities.get(getAdapterPosition()).getFacilitySector());
+            RegistrationFragment fragobj = new RegistrationFragment();
+            fragobj.setArguments(intent);
             context.startActivity(intent);
         }
     }
