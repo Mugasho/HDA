@@ -87,13 +87,12 @@ public class ParentChildAdapter extends RecyclerView.Adapter<ParentChildAdapter.
             tv_parentName = itemView.findViewById(R.id.title_from_address);
             linearLayout_childItems=itemView.findViewById(R.id.linearLayout_childItems);
             tv_childName=itemView.findViewById(R.id.title_to_address);
-
             fc.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            fc.toggle(false);
+            fc.toggle(true);
         }
     }
 }

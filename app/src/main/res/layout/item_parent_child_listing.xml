@@ -19,7 +19,14 @@
             android:id="@+id/linearLayout_childItems"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_parentName2"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:text="@string/title_activity_facility" />
+        </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
